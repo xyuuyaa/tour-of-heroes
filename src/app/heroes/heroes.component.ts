@@ -1,21 +1,26 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import { Hero } from '../hero';
-import { UpperCasePipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { HEROES } from '../mock-heroes';
+import { HeroService } from '../hero.service';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-heroes',
   standalone: true,
-  imports: [UpperCasePipe, FormsModule],
+  imports: [
+    RouterLink
+  ],
   templateUrl: './heroes.component.html',
   styleUrl: './heroes.component.scss',
 })
 export class HeroesComponent {
-  heroes = HEROES;
-  selectedHero?: Hero;
+  heroes: Hero[] = [];
+  private heroService = inject(HeroService);
 
-  onSelect(hero: Hero): void {
-    this.selectedHero = hero;
+  ngOnInit(): void {
+    this.getHeroes();
+  }
+  getHeroes(): void {
+    this.heroService.getHeroes()
+      .subscribe(heroes => this.heroes = heroes);
   }
 }
